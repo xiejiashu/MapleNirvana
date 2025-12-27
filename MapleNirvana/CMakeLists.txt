@@ -1,0 +1,171 @@
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+)
+
+set(wzlibcpp ${PROJECT_SOURCE_DIR}/3rdparty/wzlibcpp)
+include_directories(
+    ${wzlibcpp}
+    ${wzlibcpp}/include
+    ${wzlibcpp}/mio/include
+)
+
+
+set(_default_ffmpeg ON)
+if(EMSCRIPTEN OR ANDROID)
+    set(_default_ffmpeg OFF)
+endif()
+option(MAPLENIRVANA_USE_FFMPEG "Enable FFmpeg support" ${_default_ffmpeg})
+
+function(maplenirvana_link_ffmpeg target_name)
+    if(NOT MAPLENIRVANA_USE_FFMPEG)
+        return()
+    endif()
+
+    # vcpkg's ffmpeg port provides a Find module that defines FFmpeg:: targets.
+    find_package(FFMPEG REQUIRED)
+
+    if(TARGET FFmpeg::avcodec)
+        target_link_libraries(${target_name} PRIVATE
+            FFmpeg::avformat
+            FFmpeg::avcodec
+            FFmpeg::avutil
+            FFmpeg::swscale
+            FFmpeg::swresample
+        )
+
+        if(TARGET FFmpeg::avdevice)
+            target_link_libraries(${target_name} PRIVATE FFmpeg::avdevice)
+        endif()
+        if(TARGET FFmpeg::avfilter)
+            target_link_libraries(${target_name} PRIVATE FFmpeg::avfilter)
+        endif()
+    else()
+        # Fallback for non-target FindFFMPEG implementations
+        target_include_directories(${target_name} PRIVATE ${FFMPEG_INCLUDE_DIRS})
+        target_link_libraries(${target_name} PRIVATE ${FFMPEG_LIBRARIES})
+    endif()
+endfunction()
+
+file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp)
+
+if(WIN32)
+    add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})
+    # Link SDL3
+    target_link_libraries(MapleNirvana PRIVATE SDL3::SDL3)
+    # Link EnTT
+    target_link_libraries(MapleNirvana PRIVATE EnTT::EnTT)
+
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        target_compile_options(MapleNirvana PRIVATE /utf-8)
+    endif()
+
+    # 链接 wzlib 库
+    target_link_libraries(MapleNirvana PRIVATE wzlib)
+    # FFmpeg
+    maplenirvana_link_ffmpeg(MapleNirvana)
+    # freetype
+    target_link_libraries(MapleNirvana PRIVATE freetype)
+
+    if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
+        add_definitions(-DNOMINMAX)
+    endif()
+
+    set_target_properties(MapleNirvana PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+    )
+
+    # 工作目录设置为输出目录
+    set_target_properties(MapleNirvana PROPERTIES
+        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debug
+    )
+endif()
+
+if(LINUX)
+    add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})
+    # Link SDL3
+        target_link_libraries(MapleNirvana PRIVATE SDL3::SDL3)
+        # Link EnTT
+        target_link_libraries(MapleNirvana PRIVATE EnTT::EnTT)
+        # 链接 wzlib 库
+        target_link_libraries(MapleNirvana PRIVATE wzlib)
+        # FFmpeg
+        maplenirvana_link_ffmpeg(MapleNirvana)
+        # freetype
+        target_link_libraries(MapleNirvana PRIVATE freetype)
+        set_target_properties(MapleNirvana PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+endif()
+
+# 设置 Emscripten 编译选项
+if(EMSCRIPTEN)
+    add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})
+    # Link SDL3
+    target_link_libraries(MapleNirvana PRIVATE SDL3::SDL3)
+    # Link EnTT
+    target_link_libraries(MapleNirvana PRIVATE EnTT::EnTT)
+    # 链接 wzlib 库
+    target_link_libraries(MapleNirvana PRIVATE wzlib)
+    # FFmpeg (default OFF on Emscripten)
+    maplenirvana_link_ffmpeg(MapleNirvana)
+    # freetype
+    target_link_libraries(MapleNirvana PRIVATE freetype)
+
+    set(CMAKE_EXECUTABLE_SUFFIX ".html")
+        set_target_properties(MapleNirvana PROPERTIES LINK_FLAGS
+            "--preload-file ${CMAKE_SOURCE_DIR}/build/Data/@Data/"
+            # 可以添加其他Emscripten链接器选项
+        )
+        set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -sALLOW_MEMORY_GROWTH -g -sUSE_ZLIB")
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -sALLOW_MEMORY_GROWTH -g -sUSE_ZLIB")
+        set_target_properties(MapleNirvana PROPERTIES
+            RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
+        )
+endif()
+
+if(ANDROID)
+    add_library(main SHARED)
+    target_sources(main PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})
+    target_link_libraries(main PRIVATE SDL3::SDL3 android)
+    target_link_libraries(main PRIVATE EnTT::EnTT)
+    # 链接 wzlib 库
+    target_link_libraries(main wzlib)
+    # FFmpeg (default OFF on Android)
+    maplenirvana_link_ffmpeg(main)
+    # freetype
+    target_link_libraries(main freetype)
+endif()
+
+if (APPLE)
+    # Find packages
+    find_library(COREMEDIA_FRAMEWORK CoreMedia)
+    find_library(VIDEOTOOLBOX_FRAMEWORK VideoToolbox)
+    find_library(SECURITY_FRAMEWORK Security)
+
+    add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})
+
+    # Link SDL3
+    target_link_libraries(MapleNirvana PRIVATE SDL3::SDL3)
+    # Link EnTT
+    target_link_libraries(MapleNirvana PRIVATE EnTT::EnTT)
+
+    # 链接 wzlib 库
+    target_link_libraries(MapleNirvana PRIVATE wzlib)
+    # FFmpeg
+    maplenirvana_link_ffmpeg(MapleNirvana)
+    # freetype
+    target_link_libraries(MapleNirvana PRIVATE freetype)
+
+    # Link frameworks
+    target_link_libraries(
+        MapleNirvana
+        PRIVATE
+        ${COREMEDIA_FRAMEWORK}
+        ${VIDEOTOOLBOX_FRAMEWORK}
+        ${SECURITY_FRAMEWORK}
+    )
+
+    set_target_properties(MapleNirvana PROPERTIES
+        RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/bin
+    )
+endif()

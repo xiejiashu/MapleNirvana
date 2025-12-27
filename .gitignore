@@ -7,3 +7,4 @@ ffmpeg
 out
 *.pdb
 web
+build-vcpkg/
