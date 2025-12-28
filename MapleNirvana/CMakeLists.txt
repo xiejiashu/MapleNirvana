@@ -145,9 +145,16 @@ if(WIN32)
         RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
     )
 
-    # 工作目录设置为输出目录
+    # 文件复制到工程目录下的 Debug/Release 目录
     set_target_properties(MapleNirvana PROPERTIES
-        VS_DEBUGGER_WORKING_DIRECTORY ${CMAKE_BINARY_DIR}/Debug
+      RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
+      LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
+      ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
+    )
+
+    # 工作目录设置为主目录的 Debug 目录
+    set_property(TARGET MapleNirvana PROPERTY
+      VS_DEBUGGER_WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
     )
 endif()
 
