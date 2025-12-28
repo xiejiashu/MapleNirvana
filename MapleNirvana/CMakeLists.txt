@@ -114,6 +114,9 @@ list(REMOVE_ITEM SOURCE_FILES ${WZLIBCPP_SOURCES})
 
 source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SOURCE_FILES} ${WZLIBCPP_SOURCES})
 
+#加入宏 USE_CRYPTO 以启用 AES 网络加密支持
+add_definitions(-DUSE_CRYPTO)
+
 if(WIN32)
     add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})
     # Link SDL3
@@ -150,6 +153,13 @@ if(WIN32)
       RUNTIME_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
       LIBRARY_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
       ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>"
+    )
+
+    #把当前目录下的Script文件夹复制到输出目录下的Debug/Release目录覆盖
+    add_custom_command(TARGET MapleNirvana POST_BUILD
+      COMMAND ${CMAKE_COMMAND} -E copy_directory
+      "${CMAKE_SOURCE_DIR}/Script"
+      "${CMAKE_SOURCE_DIR}/Out/$<CONFIG>/Script"
     )
 
     # 工作目录设置为主目录的 Debug 目录
