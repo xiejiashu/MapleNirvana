@@ -4,9 +4,16 @@
 [submodule "3rdparty/entt"]
 	path = 3rdparty/entt
 	url = https://github.com/skypjack/entt.git
-[submodule "3rdparty/wzlibcpp"]
-	path = 3rdparty/wzlibcpp
-	url = https://github.com/PShocker/wzlibcpp.git
 [submodule "3rdparty/freetype"]
 	path = 3rdparty/freetype
 	url = https://github.com/freetype/freetype.git
+[submodule "3rdparty/mio"]
+	path = 3rdparty/mio
+	url = https://github.com/mandreyel/mio
+[submodule "3rdparty/AES"]
+	path = 3rdparty/AES
+	url = https://github.com/SeaniaTwix/AES
+[submodule "3rdparty/zlib"]
+	path = 3rdparty/zlib
+	url = https://github.com/madler/zlib.git
+	ignore = dirty

@@ -2,7 +2,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-set(wzlibcpp ${PROJECT_SOURCE_DIR}/3rdparty/wzlibcpp)
+set(wzlibcpp wzlibcpp)
 include_directories(
     ${wzlibcpp}
     ${wzlibcpp}/include
@@ -87,6 +87,8 @@ function(maplenirvana_link_ffmpeg target_name)
 endfunction()
 
 file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp)
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SOURCE_FILES})
 
 if(WIN32)
     add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})

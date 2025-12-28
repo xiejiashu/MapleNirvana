@@ -17,6 +17,11 @@ if(NOT DEFINED CMAKE_TOOLCHAIN_FILE)
     endif()
 endif()
 
+# vcpkg manifest mode (vcpkg.json)
+if(DEFINED CMAKE_TOOLCHAIN_FILE AND CMAKE_TOOLCHAIN_FILE MATCHES "vcpkg\\.cmake" AND NOT DEFINED VCPKG_MANIFEST_DIR)
+    set(VCPKG_MANIFEST_DIR "${CMAKE_SOURCE_DIR}" CACHE STRING "" FORCE)
+endif()
+
 project(MapleNirvana-Client LANGUAGES CXX)
 
 #把运行目录设置为输出目录
