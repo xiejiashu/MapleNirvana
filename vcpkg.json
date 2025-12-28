@@ -1,0 +1,16 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "maplenirvana-client",
+  "version-string": "0.0.0",
+  "description": "MapleNirvana client dependencies (vcpkg manifest)",
+  "dependencies": [
+    {
+      "name": "ffmpeg",
+      "platform": "!android & !emscripten"
+    },
+    {
+      "name": "lua",
+      "platform": "!android & !emscripten"
+    }
+  ]
+}
