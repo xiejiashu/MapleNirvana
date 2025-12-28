@@ -7,9 +7,6 @@
 [submodule "3rdparty/freetype"]
 	path = 3rdparty/freetype
 	url = https://github.com/freetype/freetype.git
-[submodule "3rdparty/mio"]
-	path = 3rdparty/mio
-	url = https://github.com/mandreyel/mio
 [submodule "3rdparty/AES"]
 	path = 3rdparty/AES
 	url = https://github.com/SeaniaTwix/AES
@@ -17,3 +14,6 @@
 	path = 3rdparty/zlib
 	url = https://github.com/madler/zlib.git
 	ignore = dirty
+[submodule "3rdparty/mio"]
+	path = 3rdparty/mio
+	url = https://github.com/mandreyel/mio
