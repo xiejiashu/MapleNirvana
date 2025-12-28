@@ -60,6 +60,13 @@ SDL_AppResult SDL_AppInit(void **appstate, int argc, char *argv[])
     Sound::init();
     Drop::init();
 
+#if defined(MAPLENIRVANA_USE_LUA) && MAPLENIRVANA_USE_LUA
+    // Default: load scripts from <exeDir>/Script
+    LuaScriptManager::instance().init();
+    // Optional entry: Script/main.lua
+    LuaScriptManager::instance().doFileIfExists("main.lua");
+#endif
+
     // World::load_map(222020111);
 
     World::load_map(1000000);

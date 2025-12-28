@@ -3,6 +3,7 @@
 void Wz::init(const std::string &filename_prefix)
 {
     const auto iv = IV4(0xb9, 0x7d, 0x63, 0xe9);
+    // const auto iv = IV4(0x4d, 0x23, 0xc7, 0x2b);
     Base = (new wz::File(iv, (std::string(filename_prefix) + std::string("Base.wz")).c_str()));
     Character = (new wz::File(iv, (std::string(filename_prefix) + std::string("Character.wz")).c_str()));
     Effect = (new wz::File(iv, (std::string(filename_prefix) + std::string("Effect.wz")).c_str()));

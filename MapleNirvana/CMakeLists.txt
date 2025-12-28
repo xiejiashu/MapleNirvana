@@ -9,12 +9,52 @@ include_directories(
     ${wzlibcpp}/mio/include
 )
 
-
 set(_default_ffmpeg ON)
 if(EMSCRIPTEN OR ANDROID)
     set(_default_ffmpeg OFF)
 endif()
 option(MAPLENIRVANA_USE_FFMPEG "Enable FFmpeg support" ${_default_ffmpeg})
+
+set(_default_lua ON)
+if(EMSCRIPTEN OR ANDROID)
+    set(_default_lua OFF)
+endif()
+option(MAPLENIRVANA_USE_LUA "Enable embedded Lua scripting (Lua 5.4 via vcpkg)" ${_default_lua})
+
+function(maplenirvana_link_lua target_name)
+    if(NOT MAPLENIRVANA_USE_LUA)
+        return()
+    endif()
+
+    # Prefer CMake's built-in FindLua module. With vcpkg toolchain enabled,
+    # this will pick up the vcpkg-provided Lua.
+    find_package(Lua QUIET)
+    if(LUA_FOUND)
+        # FindLua doesn't guarantee an imported target.
+        if(DEFINED LUA_INCLUDE_DIR)
+            target_include_directories(${target_name} PRIVATE ${LUA_INCLUDE_DIR})
+        endif()
+        if(DEFINED LUA_LIBRARIES)
+            target_link_libraries(${target_name} PRIVATE ${LUA_LIBRARIES})
+        endif()
+        return()
+    endif()
+
+    # Fallback for environments that export a config package instead.
+    find_package(unofficial-lua CONFIG QUIET)
+    if(unofficial-lua_FOUND)
+        if(TARGET unofficial::lua::lua)
+            target_link_libraries(${target_name} PRIVATE unofficial::lua::lua)
+            return()
+        elseif(TARGET unofficial::lua)
+            target_link_libraries(${target_name} PRIVATE unofficial::lua)
+            return()
+        endif()
+        message(FATAL_ERROR "Found unofficial-lua but no known targets were exported")
+    endif()
+
+    message(FATAL_ERROR "Lua requested but not found. Install via vcpkg (lua) or disable MAPLENIRVANA_USE_LUA")
+endfunction()
 
 function(maplenirvana_link_ffmpeg target_name)
     if(NOT MAPLENIRVANA_USE_FFMPEG)
@@ -63,8 +103,13 @@ if(WIN32)
     target_link_libraries(MapleNirvana PRIVATE wzlib)
     # FFmpeg
     maplenirvana_link_ffmpeg(MapleNirvana)
+    # Lua
+    maplenirvana_link_lua(MapleNirvana)
     # freetype
     target_link_libraries(MapleNirvana PRIVATE freetype)
+
+    # Lua compile-time flag (0/1)
+    target_compile_definitions(MapleNirvana PRIVATE MAPLENIRVANA_USE_LUA=$<BOOL:${MAPLENIRVANA_USE_LUA}>)
 
     if (CMAKE_CXX_COMPILER_ID STREQUAL "MSVC")
         add_definitions(-DNOMINMAX)
@@ -90,8 +135,12 @@ if(LINUX)
         target_link_libraries(MapleNirvana PRIVATE wzlib)
         # FFmpeg
         maplenirvana_link_ffmpeg(MapleNirvana)
+        # Lua
+        maplenirvana_link_lua(MapleNirvana)
         # freetype
         target_link_libraries(MapleNirvana PRIVATE freetype)
+        # Lua compile-time flag (0/1)
+        target_compile_definitions(MapleNirvana PRIVATE MAPLENIRVANA_USE_LUA=$<BOOL:${MAPLENIRVANA_USE_LUA}>)
         set_target_properties(MapleNirvana PROPERTIES
             RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}
         )
@@ -108,8 +157,13 @@ if(EMSCRIPTEN)
     target_link_libraries(MapleNirvana PRIVATE wzlib)
     # FFmpeg (default OFF on Emscripten)
     maplenirvana_link_ffmpeg(MapleNirvana)
+    # Lua (default OFF on Emscripten)
+    maplenirvana_link_lua(MapleNirvana)
     # freetype
     target_link_libraries(MapleNirvana PRIVATE freetype)
+
+    # Lua compile-time flag (0/1)
+    target_compile_definitions(MapleNirvana PRIVATE MAPLENIRVANA_USE_LUA=$<BOOL:${MAPLENIRVANA_USE_LUA}>)
 
     set(CMAKE_EXECUTABLE_SUFFIX ".html")
         set_target_properties(MapleNirvana PROPERTIES LINK_FLAGS
@@ -132,8 +186,13 @@ if(ANDROID)
     target_link_libraries(main wzlib)
     # FFmpeg (default OFF on Android)
     maplenirvana_link_ffmpeg(main)
+    # Lua (default OFF on Android)
+    maplenirvana_link_lua(main)
     # freetype
     target_link_libraries(main freetype)
+
+    # Lua compile-time flag (0/1)
+    target_compile_definitions(main PRIVATE MAPLENIRVANA_USE_LUA=$<BOOL:${MAPLENIRVANA_USE_LUA}>)
 endif()
 
 if (APPLE)
@@ -153,8 +212,13 @@ if (APPLE)
     target_link_libraries(MapleNirvana PRIVATE wzlib)
     # FFmpeg
     maplenirvana_link_ffmpeg(MapleNirvana)
+    # Lua
+    maplenirvana_link_lua(MapleNirvana)
     # freetype
     target_link_libraries(MapleNirvana PRIVATE freetype)
+
+    # Lua compile-time flag (0/1)
+    target_compile_definitions(MapleNirvana PRIVATE MAPLENIRVANA_USE_LUA=$<BOOL:${MAPLENIRVANA_USE_LUA}>)
 
     # Link frameworks
     target_link_libraries(

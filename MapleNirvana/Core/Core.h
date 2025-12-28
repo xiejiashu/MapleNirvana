@@ -11,3 +11,4 @@
 #include "Core/Texture.h"
 #include "Core/Keyboard.h"
 #include "Core/RawTexture.h"
+#include "Core/LuaScriptManager.h"
