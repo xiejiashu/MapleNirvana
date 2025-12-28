@@ -1,7 +1,7 @@
 #include "AfterImage.h"
 #include "Character.h"
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <SDL3/SDL.h>
 #include "Resources/Wz.h"
 

@@ -2,11 +2,27 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
-set(wzlibcpp wzlibcpp)
-include_directories(
-    ${wzlibcpp}
-    ${wzlibcpp}/include
-    ${wzlibcpp}/mio/include
+# ---------------------------------------------------------------------------
+# wzlibcpp (embedded)
+#
+# Many game sources include headers as "wz/...". Provide a normal static
+# library target and a stable include root at `wzlibcpp/include`.
+# ---------------------------------------------------------------------------
+set(WZLIBCPP_DIR ${CMAKE_CURRENT_SOURCE_DIR}/wzlibcpp)
+
+file(GLOB_RECURSE WZLIBCPP_SOURCES CONFIGURE_DEPENDS
+    ${WZLIBCPP_DIR}/*.cpp
+)
+
+add_library(wzlib STATIC ${WZLIBCPP_SOURCES})
+target_include_directories(wzlib PUBLIC
+    ${WZLIBCPP_DIR}
+    ${WZLIBCPP_DIR}/include
+)
+target_link_libraries(wzlib PUBLIC
+    AES::AES
+    mio::mio
+    ZLIB::ZLIBSTATIC
 )
 
 set(_default_ffmpeg ON)
@@ -86,9 +102,17 @@ function(maplenirvana_link_ffmpeg target_name)
     endif()
 endfunction()
 
-file(GLOB SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/**/*.cpp)
+file(GLOB_RECURSE SOURCE_FILES CONFIGURE_DEPENDS
+    ${CMAKE_CURRENT_SOURCE_DIR}/*.cpp
+)
 
-source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SOURCE_FILES})
+# `main.cpp` is added explicitly per-platform.
+list(REMOVE_ITEM SOURCE_FILES ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp)
+
+# wzlibcpp sources live in the `wzlib` target.
+list(REMOVE_ITEM SOURCE_FILES ${WZLIBCPP_SOURCES})
+
+source_group(TREE "${CMAKE_CURRENT_SOURCE_DIR}" FILES ${SOURCE_FILES} ${WZLIBCPP_SOURCES})
 
 if(WIN32)
     add_executable(MapleNirvana ${CMAKE_CURRENT_SOURCE_DIR}/main.cpp ${SOURCE_FILES})

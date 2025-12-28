@@ -1,6 +1,6 @@
 #include "Skill.h"
 #include "Sound.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <string>
 #include <SDL3/SDL.h>
 #include "Resources/Wz.h"

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <SDL3/SDL.h>
 
 void load_portal(wz::Node *node, int id);

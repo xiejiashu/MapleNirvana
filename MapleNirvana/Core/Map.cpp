@@ -3,7 +3,7 @@
 
 #include <string>
 #include <unordered_set>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "entt/entt.hpp"
 
 #include "Components/Components.h"

@@ -1,5 +1,5 @@
 #include "Drop.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "Core/Core.h"
 #include "Components/Components.h"
 #include "Commons/Commons.h"

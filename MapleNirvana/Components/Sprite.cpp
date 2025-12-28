@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <SDL3/SDL.h>
 #include "Core/Core.h"
 

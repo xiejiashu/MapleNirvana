@@ -1,7 +1,7 @@
 #pragma once
 
 #include <SDL3/SDL.h>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <optional>
 
 struct Sprite

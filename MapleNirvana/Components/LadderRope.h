@@ -1,6 +1,6 @@
 #pragma once
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <optional>
 
 struct LadderRope

@@ -2,7 +2,7 @@
 #include "Transform.h"
 #include "Sprite.h"
 #include "Core/Window.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <SDL3/SDL.h>
 #include <unordered_set>
 #include <tuple>

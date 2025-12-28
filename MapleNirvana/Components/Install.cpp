@@ -1,5 +1,5 @@
 #include "Install.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "Resources/Wz.h"
 
 Install::Install(const std::u16string &id) : id(id)

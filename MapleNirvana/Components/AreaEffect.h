@@ -1,5 +1,5 @@
 #pragma once
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "AnimatedSprite.h"
 #include "Transform.h"
 #include <vector>

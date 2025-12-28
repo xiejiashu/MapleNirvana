@@ -1,5 +1,5 @@
 #include "Mob.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "entt/entt.hpp"
 #include <SDL3/SDL.h>
 #include "Core/Core.h"

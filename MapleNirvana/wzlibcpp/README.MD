@@ -4,7 +4,7 @@
 #include <algorithm>
 
 #include <wz/Node.hpp>
-#include <wz/File.hpp>
+#include <File.hpp>
 #include <wz/Directory.hpp>
 #include <wz/Property.hpp>
 

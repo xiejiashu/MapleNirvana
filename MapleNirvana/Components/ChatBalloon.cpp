@@ -2,7 +2,7 @@
 #include "Core/FreeType.h"
 #include "Core/Texture.h"
 #include "Resources/Wz.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 
 void ChatBalloon::push(ChatBalloon *chatballoon, std::u16string str, SDL_Color color, std::u16string type)
 {

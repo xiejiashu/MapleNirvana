@@ -4,7 +4,7 @@
 #include "Resources/Wz.h"
 
 #include <SDL3/SDL.h>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <thread>
 #include <list>
 

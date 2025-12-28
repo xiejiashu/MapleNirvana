@@ -1,7 +1,7 @@
 #include "Damage.h"
 #include "Sprite.h"
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "Resources/Wz.h"
 #include "Core/Window.h"
 

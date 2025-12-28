@@ -68,9 +68,8 @@ if "%DO_CLEAN%"=="1" (
 )
 
 REM Configure
-cmake -S "%ROOT%" -B "%BUILD_DIR%" -G "Visual Studio 17 2022" -A x64 ^
-  -DCMAKE_TOOLCHAIN_FILE="%VCPKG_TOOLCHAIN%" ^
-  -DVCPKG_TARGET_TRIPLET="%TRIPLET%"
+cmake -S "%ROOT%" -B "%BUILD_DIR%" -G "Visual Studio 17 2022" -A x64 -DCMAKE_TOOLCHAIN_FILE="%ROOT%\cmake\vcpkg-toolchain-wrap.cmake" -DVCPKG_TARGET_TRIPLET="%TRIPLET%" -U"CMAKE_DISABLE_FIND_PACKAGE_GTest"
+
 if errorlevel 1 (
   echo.
   echo [ERROR] CMake configure failed.

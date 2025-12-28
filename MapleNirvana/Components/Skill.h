@@ -3,7 +3,7 @@
 #include "Sound.h"
 #include "Attack.h"
 #include "AnimatedSprite.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "entt/entt.hpp"
 #include <SDL3/SDL.h>
 #include <optional>

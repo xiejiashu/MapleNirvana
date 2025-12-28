@@ -1,6 +1,6 @@
 #pragma once
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 
 void load_background(wz::Node *node, int id);
 enum

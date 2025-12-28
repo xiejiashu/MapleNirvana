@@ -1,5 +1,5 @@
 #include "Cursor.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <SDL3/SDL.h>
 #include "Resources/Wz.h"
 #include "Components/Components.h"

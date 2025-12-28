@@ -1,7 +1,7 @@
 #include "AnimatedSprite.h"
 #include "Core/Map.h"
 #include <vector>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 
 AnimatedSprite::Wrap *AnimatedSprite::Wrap::load(wz::Node *node, int alpha)
 {

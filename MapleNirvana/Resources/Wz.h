@@ -1,6 +1,6 @@
 #pragma once
 
-#include <wz/File.hpp>
+#include <File.hpp>
 
 struct Wz
 {

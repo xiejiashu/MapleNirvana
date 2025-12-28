@@ -1,5 +1,5 @@
 #pragma once
 
-#include "wz/Property.hpp"
+#include "Property.hpp"
 
 void load_mob(wz::Node *node);

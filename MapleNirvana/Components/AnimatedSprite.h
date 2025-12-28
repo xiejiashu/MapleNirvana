@@ -3,7 +3,7 @@
 #include "Sprite.h"
 #include <vector>
 #include <unordered_set>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 
 struct AnimatedSprite
 {

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "entt/entt.hpp"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <vector>
 #include "Components/Components.h"
 

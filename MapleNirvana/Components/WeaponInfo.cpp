@@ -1,6 +1,6 @@
 #include "WeaponInfo.h"
 #include <string>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "Components/Components.h"
 
 WeaponWrap::WeaponWrap(const std::u16string &id)

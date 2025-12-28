@@ -1,7 +1,7 @@
 #pragma once
 
 #include <string>
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "Components/Components.h"
 
 struct Item

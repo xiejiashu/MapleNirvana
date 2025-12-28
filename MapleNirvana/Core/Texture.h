@@ -1,5 +1,5 @@
 #pragma once
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include <SDL3/SDL.h>
 
 struct Texture

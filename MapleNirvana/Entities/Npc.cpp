@@ -1,5 +1,5 @@
 #include "Npc.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "entt/entt.hpp"
 #include "Core/Core.h"
 #include "Components/Components.h"

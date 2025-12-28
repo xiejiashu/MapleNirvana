@@ -7,7 +7,7 @@
 #include "MiniMap.h"
 #include "QuickSlot.h"
 #include "Button.h"
-#include "wz/Property.hpp"
+#include "Property.hpp"
 #include "Resources/Wz.h"
 #include "Components/Components.h"
 
