@@ -7,7 +7,7 @@ void FreeType::init(const std::string &filename_prefix)
 {
     FT_Init_FreeType(library);
 
-    std::string font_path = filename_prefix + "simsun_d2d.ttf";// "simsun.ttc";
+    std::string font_path = filename_prefix + "simsun.ttc";
     FT_New_Face(*library, font_path.c_str(), 0, face);
 
     FT_Select_Charmap(*face, FT_ENCODING_UNICODE);

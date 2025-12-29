@@ -1,9 +1,7 @@
 @echo off
 setlocal EnableExtensions EnableDelayedExpansion
 
-REM Fast build script (vcpkg manifest mode + CMake)
-REM - Configure only when needed (first run / --reconfigure / --clean)
-REM - Keep incremental builds fast
+REM One-click build script (vcpkg manifest mode + CMake)
 
 set "ROOT=%~dp0"
 set "ROOT=%ROOT:~0,-1%"
@@ -11,29 +9,20 @@ set "ROOT=%ROOT:~0,-1%"
 REM Defaults
 set "CONFIG=Release"
 set "TRIPLET=x64-windows"
-set "GEN=Visual Studio 17 2022"
-set "ARCH=x64"
 set "BUILD_DIR=%ROOT%\build-vcpkg-%TRIPLET%"
 
-REM Args:
-REM   build.bat [Debug|Release] [triplet] [--clean] [--reconfigure]
-REM Examples:
-REM   build.bat Release x64-windows --clean
-REM   build.bat Debug x86-windows --reconfigure
+REM Allow: build.bat Debug
 if not "%~1"=="" set "CONFIG=%~1"
+
+REM Optional: build.bat Debug x64-windows-static
 if not "%~2"=="" (
   set "TRIPLET=%~2"
   set "BUILD_DIR=%ROOT%\build-vcpkg-%TRIPLET%"
 )
 
+REM Optional: build.bat Debug x64-windows --clean
 set "DO_CLEAN=0"
-set "DO_RECONF=0"
-
-REM allow flags in 3rd or 4th position
-for %%A in ("%~3" "%~4") do (
-  if /I "%%~A"=="--clean" set "DO_CLEAN=1"
-  if /I "%%~A"=="--reconfigure" set "DO_RECONF=1"
-)
+if /I "%~3"=="--clean" set "DO_CLEAN=1"
 
 REM Resolve vcpkg root
 set "VCPKG_ROOT_RESOLVED="
@@ -72,32 +61,28 @@ echo [INFO] vcpkg: %VCPKG_ROOT_RESOLVED%
 echo [INFO] Toolchain: %VCPKG_TOOLCHAIN%
 echo.
 
-REM Clean if requested
+REM Clean cache if requested OR if platform mismatch previously (simple safe nuke)
 if "%DO_CLEAN%"=="1" (
-  echo [INFO] Cleaning build directory
+  echo [INFO] Cleaning build directory...
   if exist "%BUILD_DIR%" rmdir /s /q "%BUILD_DIR%"
 )
 
-REM Decide whether to configure
-if not exist "%BUILD_DIR%\CMakeCache.txt" set "DO_RECONF=1"
-if "%DO_RECONF%"=="1" (
-  echo [INFO] Configuring (CMake generate)
-  cmake -S "%ROOT%" -B "%BUILD_DIR%" -G "%GEN%" -A %ARCH% -DCMAKE_TOOLCHAIN_FILE="%VCPKG_TOOLCHAIN%" -DVCPKG_TARGET_TRIPLET=%TRIPLET%
-  if errorlevel 1 (
-    echo.
-    echo [ERROR] CMake configure failed.
-    echo [HINT] Try: build.bat %CONFIG% %TRIPLET% --clean
-    pause
-    exit /b 1
-  )
-) else (
-  echo [INFO] Skipping configure (incremental build)...
+REM Configure
+cmake -S "%ROOT%" -B "%BUILD_DIR%" -G "Visual Studio 17 2022" -A x64 ^
+  -DCMAKE_BUILD_TYPE=%CONFIG% ^
+  -DCMAKE_TOOLCHAIN_FILE="%VCPKG_TOOLCHAIN%" ^
+  -DVCPKG_TARGET_TRIPLET=%TRIPLET%
+
+if errorlevel 1 (
+  echo.
+  echo [ERROR] CMake configure failed.
+  echo [HINT] Try: build.bat %CONFIG% %TRIPLET% --clean
+  pause
+  exit /b 1
 )
 
-REM Build (incremental)
-echo [INFO] Building...
-cmake --build "%BUILD_DIR%" --config %CONFIG% --parallel
-
+REM Build
+cmake --build "%BUILD_DIR%" --config %CONFIG%
 if errorlevel 1 (
   echo.
   echo [ERROR] Build failed.
